@@ -7,6 +7,7 @@ var frame_1 = require("../frame");
 var action_bar_1 = require("../action-bar");
 var style_scope_1 = require("../styling/style-scope");
 var file_system_1 = require("../../file-system");
+var profiling_1 = require("../../profiling");
 __export(require("../content-view"));
 var PageBase = (function (_super) {
     __extends(PageBase, _super);
@@ -135,7 +136,8 @@ var PageBase = (function (_super) {
     };
     Object.defineProperty(PageBase.prototype, "frame", {
         get: function () {
-            return this.parent;
+            var frame = this.parent;
+            return frame instanceof frame_1.Frame ? frame : undefined;
         },
         enumerable: true,
         configurable: true
@@ -256,22 +258,40 @@ var PageBase = (function (_super) {
     });
     PageBase.prototype._resetCssValues = function () {
         var resetCssValuesFunc = function (view) {
-            view._cancelAllAnimations();
-            content_view_1.resetCSSProperties(view.style);
+            view._batchUpdate(function () {
+                view._cancelAllAnimations();
+                content_view_1.resetCSSProperties(view.style);
+            });
             return true;
         };
         resetCssValuesFunc(this);
         content_view_1.eachDescendant(this, resetCssValuesFunc);
     };
+    PageBase.navigatingToEvent = "navigatingTo";
+    PageBase.navigatedToEvent = "navigatedTo";
+    PageBase.navigatingFromEvent = "navigatingFrom";
+    PageBase.navigatedFromEvent = "navigatedFrom";
+    PageBase.shownModallyEvent = "shownModally";
+    PageBase.showingModallyEvent = "showingModally";
+    __decorate([
+        profiling_1.profile
+    ], PageBase.prototype, "onLoaded", null);
+    __decorate([
+        profiling_1.profile
+    ], PageBase.prototype, "onNavigatingTo", null);
+    __decorate([
+        profiling_1.profile
+    ], PageBase.prototype, "onNavigatedTo", null);
+    __decorate([
+        profiling_1.profile
+    ], PageBase.prototype, "onNavigatingFrom", null);
+    __decorate([
+        profiling_1.profile
+    ], PageBase.prototype, "onNavigatedFrom", null);
     return PageBase;
 }(content_view_1.ContentView));
-PageBase.navigatingToEvent = "navigatingTo";
-PageBase.navigatedToEvent = "navigatedTo";
-PageBase.navigatingFromEvent = "navigatingFrom";
-PageBase.navigatedFromEvent = "navigatedFrom";
-PageBase.shownModallyEvent = "shownModally";
-PageBase.showingModallyEvent = "showingModally";
 exports.PageBase = PageBase;
+PageBase.prototype.recycleNativeView = "never";
 exports.actionBarHiddenProperty = new content_view_1.Property({ name: "actionBarHidden", affectsLayout: content_view_1.isIOS, valueConverter: content_view_1.booleanConverter });
 exports.actionBarHiddenProperty.register(PageBase);
 exports.backgroundSpanUnderStatusBarProperty = new content_view_1.Property({ name: "backgroundSpanUnderStatusBar", defaultValue: false, affectsLayout: content_view_1.isIOS, valueConverter: content_view_1.booleanConverter });

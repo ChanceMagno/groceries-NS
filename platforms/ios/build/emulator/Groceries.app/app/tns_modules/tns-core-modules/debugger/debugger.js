@@ -12,7 +12,7 @@ var NetworkAgent;
 (function (NetworkAgent) {
     function responseReceived(requestId, result, headers) {
         var requestIdStr = requestId.toString();
-        var mimeType = headers["Content-Type"] || headers["content-type"];
+        var mimeType = headers["Content-Type"] || headers["content-type"] || "application/octet-stream";
         var response = {
             url: result.url || "",
             status: result.statusCode,

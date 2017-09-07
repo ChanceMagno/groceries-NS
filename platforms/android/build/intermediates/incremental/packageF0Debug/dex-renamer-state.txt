@@ -1,0 +1,4 @@
+#Thu Sep 07 13:19:39 PDT 2017
+base.0=/Users/chance/Desktop/NativeScript Apps/Groceries/platforms/android/build/intermediates/transforms/dex/F0/debug/folders/1000/1f/main
+renamed.0=classes.dex
+file.0=/Users/chance/Desktop/NativeScript Apps/Groceries/platforms/android/build/intermediates/transforms/dex/F0/debug/folders/1000/1f/main/classes.dex

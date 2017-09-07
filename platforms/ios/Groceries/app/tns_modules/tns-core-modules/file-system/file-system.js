@@ -1,5 +1,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var file_access_module = require("./file-system-access");
+var profiling_1 = require("../profiling");
 var fileAccess;
 var getFileAccess = function () {
     if (!fileAccess) {
@@ -287,6 +288,9 @@ var File = (function (_super) {
             throw new Error("Cannot access a locked file.");
         }
     };
+    __decorate([
+        profiling_1.profile
+    ], File.prototype, "readTextSync", null);
     return File;
 }(FileSystemEntity));
 exports.File = File;

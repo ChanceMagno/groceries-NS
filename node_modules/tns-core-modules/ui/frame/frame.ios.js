@@ -2,8 +2,9 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
+var profiling_1 = require("../../profiling");
 var frame_common_1 = require("./frame-common");
-var transition_1 = require("../transition");
+var fragment_transitions_1 = require("./fragment.transitions");
 var uiUtils = require("tns-core-modules/ui/utils");
 var utils = require("../../utils/utils");
 __export(require("./frame-common"));
@@ -12,7 +13,6 @@ var NAV_DEPTH = "_navDepth";
 var TRANSITION = "_transition";
 var DELEGATE = "_delegate";
 var navDepth = -1;
-var FRAME_CONTEXT = {};
 var Frame = (function (_super) {
     __extends(Frame, _super);
     function Frame() {
@@ -21,7 +21,7 @@ var Frame = (function (_super) {
         _this._shouldSkipNativePop = false;
         _this._isInitialNavigation = true;
         _this._ios = new iOSFrame(_this);
-        _this.nativeView = _this._ios.controller.view;
+        _this.nativeViewProtected = _this._ios.controller.view;
         var frameRef = new WeakRef(_this);
         frame_common_1.application.ios.addNotificationObserver(UIApplicationDidChangeStatusBarFrameNotification, function (notification) {
             var frame = frameRef.get();
@@ -34,16 +34,6 @@ var Frame = (function (_super) {
         });
         return _this;
     }
-    Object.defineProperty(Frame.prototype, "_context", {
-        get: function () {
-            return FRAME_CONTEXT;
-        },
-        set: function (value) {
-            throw new Error("Frame _context is readonly");
-        },
-        enumerable: true,
-        configurable: true
-    });
     Frame.prototype.onLoaded = function () {
         _super.prototype.onLoaded.call(this);
         if (this._paramToNavigate) {
@@ -216,7 +206,7 @@ var Frame = (function (_super) {
     });
     Frame.prototype.requestLayout = function () {
         _super.prototype.requestLayout.call(this);
-        var window = this.nativeView.window;
+        var window = this.nativeViewProtected.window;
         if (window) {
             window.setNeedsLayout();
         }
@@ -285,7 +275,7 @@ var Frame = (function (_super) {
     };
     Frame.prototype.remeasureFrame = function () {
         this.requestLayout();
-        var window = this.nativeView.window;
+        var window = this.nativeViewProtected.window;
         if (window) {
             window.layoutIfNeeded();
         }
@@ -306,8 +296,14 @@ var Frame = (function (_super) {
         }
         this._ios.controller.navigationBar.autoresizingMask = 0;
         this._ios.controller.navigationBar.removeConstraints(this._ios.controller.navigationBar.constraints);
-        this._ios.controller.navigationBar.frame = CGRectMake(utils.layout.toDeviceIndependentPixels(this._ios.controller.navigationBar.frame.origin.x), utils.layout.toDeviceIndependentPixels(statusBarHeight), utils.layout.toDeviceIndependentPixels(this._ios.controller.navigationBar.frame.size.width), utils.layout.toDeviceIndependentPixels(this._ios.controller.navigationBar.frame.size.height));
+        this._ios.controller.navigationBar.frame = CGRectMake(this._ios.controller.navigationBar.frame.origin.x, utils.layout.toDeviceIndependentPixels(statusBarHeight), this._ios.controller.navigationBar.frame.size.width, this._ios.controller.navigationBar.frame.size.height);
     };
+    __decorate([
+        profiling_1.profile
+    ], Frame.prototype, "onLoaded", null);
+    __decorate([
+        profiling_1.profile
+    ], Frame.prototype, "_navigateCore", null);
     return Frame;
 }(frame_common_1.FrameBase));
 exports.Frame = Frame;
@@ -344,12 +340,12 @@ var TransitionDelegate = (function (_super) {
             transitionDelegates.splice(index, 1);
         }
     };
+    TransitionDelegate.ObjCExposedMethods = {
+        "animationWillStart": { returns: interop.types.void, params: [NSString, NSObject] },
+        "animationDidStop": { returns: interop.types.void, params: [NSString, NSNumber, NSObject] }
+    };
     return TransitionDelegate;
 }(NSObject));
-TransitionDelegate.ObjCExposedMethods = {
-    "animationWillStart": { returns: interop.types.void, params: [NSString, NSObject] },
-    "animationDidStop": { returns: interop.types.void, params: [NSString, NSNumber, NSObject] }
-};
 var _defaultTransitionDuration = 0.35;
 var UINavigationControllerAnimatedDelegate = (function (_super) {
     __extends(UINavigationControllerAnimatedDelegate, _super);
@@ -377,12 +373,12 @@ var UINavigationControllerAnimatedDelegate = (function (_super) {
             frame_common_1.traceWrite("UINavigationControllerImpl.navigationControllerAnimationControllerForOperationFromViewControllerToViewController(" + operation + ", " + fromVC + ", " + toVC + "), transition: " + JSON.stringify(navigationTransition), frame_common_1.traceCategories.NativeLifecycle);
         }
         var curve = _getNativeCurve(navigationTransition);
-        var animationController = transition_1._createIOSAnimatedTransitioning(navigationTransition, curve, operation, fromVC, toVC);
+        var animationController = fragment_transitions_1._createIOSAnimatedTransitioning(navigationTransition, curve, operation, fromVC, toVC);
         return animationController;
     };
+    UINavigationControllerAnimatedDelegate.ObjCProtocols = [UINavigationControllerDelegate];
     return UINavigationControllerAnimatedDelegate;
 }(NSObject));
-UINavigationControllerAnimatedDelegate.ObjCProtocols = [UINavigationControllerDelegate];
 var UINavigationControllerImpl = (function (_super) {
     __extends(UINavigationControllerImpl, _super);
     function UINavigationControllerImpl() {
@@ -400,10 +396,10 @@ var UINavigationControllerImpl = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    UINavigationControllerImpl.prototype.viewDidLoad = function () {
-        _super.prototype.viewDidLoad.call(this);
+    UINavigationControllerImpl.prototype.viewWillAppear = function (animated) {
+        _super.prototype.viewWillAppear.call(this, animated);
         var owner = this._owner.get();
-        if (owner) {
+        if (owner && (!owner.isLoaded && !owner.parent)) {
             owner.onLoaded();
         }
     };
@@ -506,6 +502,9 @@ var UINavigationControllerImpl = (function (_super) {
         });
         return null;
     };
+    __decorate([
+        profiling_1.profile
+    ], UINavigationControllerImpl.prototype, "viewWillAppear", null);
     return UINavigationControllerImpl;
 }(UINavigationController));
 function _getTransitionId(nativeTransition, transitionType) {

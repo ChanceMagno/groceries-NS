@@ -1,50 +1,27 @@
 {
-  "_args": [
-    [
-      {
-        "raw": "rxjs@~5.2.0",
-        "scope": null,
-        "escapedName": "rxjs",
-        "name": "rxjs",
-        "rawSpec": "~5.2.0",
-        "spec": ">=5.2.0 <5.3.0",
-        "type": "range"
-      },
-      "/Users/chance/Desktop/NativeScript Apps/Groceries/node_modules/nativescript-template-ng-groceries"
-    ]
-  ],
-  "_from": "rxjs@>=5.2.0 <5.3.0",
+  "_from": "rxjs@~5.2.0",
   "_id": "rxjs@5.2.0",
-  "_inCache": true,
+  "_inBundle": false,
+  "_integrity": "sha1-21N96HZ8BfpzchWHop4AhTB9MYs=",
   "_location": "/rxjs",
-  "_nodeVersion": "7.4.0",
-  "_npmOperationalInternal": {
-    "host": "packages-12-west.internal.npmjs.com",
-    "tmp": "tmp/rxjs-5.2.0.tgz_1487650676666_0.29112744983285666"
-  },
-  "_npmUser": {
-    "name": "blesh",
-    "email": "ben@benlesh.com"
-  },
-  "_npmVersion": "4.0.5",
   "_phantomChildren": {},
   "_requested": {
+    "type": "range",
+    "registry": true,
     "raw": "rxjs@~5.2.0",
-    "scope": null,
-    "escapedName": "rxjs",
     "name": "rxjs",
+    "escapedName": "rxjs",
     "rawSpec": "~5.2.0",
-    "spec": ">=5.2.0 <5.3.0",
-    "type": "range"
+    "saveSpec": null,
+    "fetchSpec": "~5.2.0"
   },
   "_requiredBy": [
-    "/nativescript-template-ng-groceries"
+    "/"
   ],
   "_resolved": "https://registry.npmjs.org/rxjs/-/rxjs-5.2.0.tgz",
   "_shasum": "db537de8767c05fa73721587a29e0085307d318b",
-  "_shrinkwrap": null,
   "_spec": "rxjs@~5.2.0",
-  "_where": "/Users/chance/Desktop/NativeScript Apps/Groceries/node_modules/nativescript-template-ng-groceries",
+  "_where": "/Users/chance/Desktop/NativeScript Apps/Groceries",
   "author": {
     "name": "Ben Lesh",
     "email": "ben@benlesh.com"
@@ -52,6 +29,7 @@
   "bugs": {
     "url": "https://github.com/ReactiveX/RxJS/issues"
   },
+  "bundleDependencies": false,
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
@@ -86,6 +64,7 @@
   "dependencies": {
     "symbol-observable": "^1.0.1"
   },
+  "deprecated": false,
   "description": "Reactive Extensions for modern JavaScript",
   "devDependencies": {
     "benchmark": "^2.1.0",
@@ -140,11 +119,6 @@
     "webpack": "^1.13.1",
     "xmlhttprequest": "1.8.0"
   },
-  "directories": {},
-  "dist": {
-    "shasum": "db537de8767c05fa73721587a29e0085307d318b",
-    "tarball": "https://registry.npmjs.org/rxjs/-/rxjs-5.2.0.tgz"
-  },
   "engines": {
     "npm": ">=2.0.0"
   },
@@ -173,24 +147,11 @@
     ]
   },
   "main": "Rx.js",
-  "maintainers": [
-    {
-      "name": "blesh",
-      "email": "ben@benlesh.com"
-    },
-    {
-      "name": "jeffbcross",
-      "email": "middlefloor@gmail.com"
-    }
-  ],
   "name": "rxjs",
-  "optionalDependencies": {},
-  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/ReactiveX/RxJS.git"
   },
-  "scripts": {},
   "scripts-info": {
     "info": "List available script",
     "build_all": "Build all packages (ES6, CJS, UMD) and generate packages",
